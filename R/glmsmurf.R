@@ -81,7 +81,7 @@
 #' @references Devriendt, S., Antonio, K., Reynkens, T. and Verbelen, R. (2021). "Sparse Regression with Multi-type Regularized Feature Modeling", Insurance: Mathematics and Economics, 96, 248--261. <doi:10.1016/j.insmatheco.2020.11.010>.
 #' 
 #' Hastie, T., Tibshirani, R., and Wainwright, M. (2015). \emph{Statistical Learning with Sparsity: The Lasso and Generalizations}. CRC Press.
-#' @example /inst/examples/Rent_example1.R
+#' @example /inst/examples/SpeedComparison.R
 glmsmurf <- function(formula, family, data, weights, start, offset, lambda, lambda1 = 0, lambda2 = 0, 
                      pen.weights, adj.matrix, standardize = TRUE, control = list(), 
                      x.return = FALSE, y.return = TRUE, pen.weights.return = FALSE) {

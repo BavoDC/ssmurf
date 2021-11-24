@@ -166,99 +166,33 @@ data("rent", package = "catdata")
 # Urban district in Munich
 rent$area <- as.factor(rent$area)
 
-# Decade of construction
-rent$year <- as.factor(floor(rent$year / 10) * 10)
-
-# Number of rooms
-rent$rooms <- as.factor(rent$rooms)
-
-# Quality of the house with levels "fair", "good" and "excellent"
-rent$quality <- as.factor(rent$good + 2 * rent$best)
-levels(rent$quality) <- c("fair", "good", "excellent")
-
-# Floor space divided in categories (0, 30), [30, 40), ...,  [130, 140)
-sizeClasses <- c(0, seq(30, 140, 10))
-rent$size <- as.factor(sizeClasses[findInterval(rent$size, sizeClasses)])
-
-# Is warm water present?
-rent$warm <- factor(rent$warm, labels = c("yes", "no"))
-
-# Is central heating present?
-rent$central <- factor(rent$central, labels = c("yes", "no"))
-
-# Does the bathroom have tiles?
-rent$tiles <- factor(rent$tiles, labels = c("yes", "no"))
-
-# Is there special furniture in the bathroom?
-rent$bathextra <- factor(rent$bathextra, labels = c("no", "yes"))
-
-# Is the kitchen well-equipped?
-rent$kitchen <- factor(rent$kitchen, labels = c("no", "yes"))
-
-
-
 # Create formula with 'rentm' as response variable,
 # 'area' with a Generalized Fused Lasso penalty,
-# 'year', 'rooms', 'quality' and 'size' with Fused Lasso penalties,
-# and the other predictors with Lasso penalties.
-formu <- rentm ~ p(area, pen = "gflasso") + 
- p(year, pen = "flasso") + p(rooms, pen = "flasso") + 
- p(quality, pen = "flasso") + p(size, pen = "flasso") +
- p(warm, pen = "lasso") + p(central, pen = "lasso") + 
- p(tiles, pen = "lasso") + p(bathextra, pen = "lasso") + 
- p(kitchen, pen = "lasso") 
+formu <- rentm ~ p(area, pen = "gflasso")
 
 
-# Fit a multi-type regularized GLM using the SMuRF algorithm.
-# We use standardization adaptive penalty weights based on an initial GLM fit.
-# The value for lambda is selected using cross-validation 
-# (with the deviance as loss measure and the one standard error rule), see example(plot_lambda) 
-munich.fit <- glmsmurf(formula = formu, family = gaussian(), data = rent, 
-                       pen.weights = "glm.stand", lambda = 0.02)
+# Quick comparison with previous package in terms of speed
+rbenchmark::benchmark(smurf::glmsmurf(formula = formu, family = gaussian, data = rent, 
+                                      pen.weights = "glm.stand", lambda = 5e-3,
+                                      control = glmsmurf.control(epsilon = 1e-8, print = F , ncores = 1, po.ncores = 1)),
+                      ssmurf::glmsmurf(formula = formu, family = gaussian, data = rent, 
+                                       pen.weights = "glm.stand", lambda = 5e-3,
+                                       control = glmsmurf.control(epsilon = 1e-8, print = F , ncores = 1, po.ncores = 1)), 
+                      replications = 20)
 
 
-####
-# S3 methods for glmsmurf objects
+# The following comparison takes a bit longer
+l = c(exp(seq(log(64), log(1e-4), length.out = 50)))
 
-
-# Model summary
-summary(munich.fit) 
-
-
-# Get coefficients of estimated model
-coef(munich.fit) 
-# Get coefficients of re-estimated model
-coef_reest(munich.fit)
- 
-
-# Plot coefficients of estimated model
-plot(munich.fit)
-# Plot coefficients of re-estimated model
-plot_reest(munich.fit)
-
-
-# Get deviance of estimated model
-deviance(munich.fit) 
-# Get deviance of re-estimated model
-deviance_reest(munich.fit)
-
-
-# Get fitted values of estimated model
-fitted(munich.fit) 
-# Get fitted values of re-estimated model
-fitted_reest(munich.fit)
-
-
-# Get predicted values of estimated model on scale of linear predictors
-predict(munich.fit, type = "link") 
-# Get predicted values of re-estimated model on scale of linear predictors
-predict_reest(munich.fit, type = "link")
-
-
-# Get deviance residuals of estimated model
-residuals(munich.fit, type = "deviance") 
-# Get deviance residuals of re-estimated model
-residuals_reest(munich.fit, type = "deviance")
+# Speed comparison to the previous package
+rbenchmark::benchmark(smurf::glmsmurf(formula = formu, family = gaussian, data = rent, 
+                                      pen.weights = "glm.stand", lambda = "cv1se.dev",
+                                      control = glmsmurf.control(epsilon = 1e-8, print = F , k = 10, ncores = 1, po.ncores = 1,
+                                                                 lambda.vector = l)),
+                      ssmurf::glmsmurf(formula = formu, family = gaussian, data = rent, 
+                                       pen.weights = "glm.stand", lambda = "cv1se.dev",
+                                       control = glmsmurf.control(epsilon = 1e-8, print = F, k = 10, ncores = 1, po.ncores = 1,
+                                                                  lambda.vector = l)), replications = 10)
 }
 \references{
 Devriendt, S., Antonio, K., Reynkens, T. and Verbelen, R. (2021). "Sparse Regression with Multi-type Regularized Feature Modeling", Insurance: Mathematics and Economics, 96, 248--261. <doi:10.1016/j.insmatheco.2020.11.010>.
