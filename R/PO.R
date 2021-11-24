@@ -72,15 +72,6 @@
                             norm = norms.group[j])) 
       
     } else if (pen.cov[[j]] %in% c("flasso", "gflasso", "2dflasso", "ggflasso")) {
-      ArgzList <<- list(
-        beta_tilde = as.numeric(beta.tilde.split[[j]]),
-        slambda = lambda * step,
-        # lambda1[[j]] and lambda2[[j]] are 0 for 2dflasso
-        # lambda1[[j]] can be a vector, lambda2[[j]] is always a single number
-        lambda1 = lambda1[[j]], lambda2 = lambda2[[j]],
-        penmat = pen.mat.cov[[j]], Q = pen.mat.cov.aux[[j]]$Q, eigval = pen.mat.cov.aux[[j]]$eigval,
-        fast = all(abs(pen.mat.cov.aux[[j]]$eigval) >= 1e-10), maxiter = 1e4, rho = 1,
-        beta_old = beta.old.split[[j]])
       # Avoid numerical problems with zero eigenvalues, use old ADMM then (fast = FALSE)
       return(admm_po_cpp(beta_tilde = as.numeric(beta.tilde.split[[j]]),
                          slambda = lambda * step, 
