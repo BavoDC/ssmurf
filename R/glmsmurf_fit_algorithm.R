@@ -63,7 +63,7 @@
   # Initialise old objective function
   obj.beta.old <- 0
   # Starting value for mu (using starting value for beta)
-  mu.cand <- linkinv(as.numeric(X %*% start + offset))
+  mu.cand <- linkinv(XB(X,  start) + offset)
   
   # f function: minus scaled log-likelihood function
   f.beta.cand <- -.scaled.ll(y = y, n = n, mu = mu.cand, wt = weights)
@@ -92,7 +92,7 @@
     # Updates for values depending on theta
     
     # Compute eta and mu based on estimates for theta
-    eta.theta <- as.numeric(X %*% theta + offset)
+    eta.theta <- XB(X, theta) + offset
     mu.theta <- linkinv(eta.theta)
     
     # Compute f: minus scaled log-likelihood using estimates for theta
@@ -105,7 +105,9 @@
     # Gradient update
     
     # Compute gradient
-    grad <- as.numeric((weights * (mu.theta - y) / family$variance(mu.theta) * family$mu.eta(eta.theta)) %*% X / sum(weights != 0))
+    Vec  = weights * (mu.theta - y) / family$variance(mu.theta) * family$mu.eta(eta.theta)
+    grad = XtV(X, Vec) / sum(weights != 0)
+    # grad <- as.numeric((weights * (mu.theta - y) / family$variance(mu.theta) * family$mu.eta(eta.theta)) %*% X / sum(weights != 0))
     # Note that this is the same as
     # grad <- as.numeric(Matrix::t(X) %*% as.vector(weights * (mu.theta - y) / family$variance(mu.theta) * family$mu.eta(eta.theta)) / sum(weights != 0))
     
@@ -121,7 +123,7 @@
                      lambda = lambda, lambda1 = lambda1, lambda2 = lambda2, step = step, po.ncores = po.ncores)
     
     # Compute mu based on estimates for beta
-    mu.cand <- linkinv(as.numeric(X %*% beta.cand + offset))
+    mu.cand <- linkinv(XB(X, beta.cand) + offset)
     
     # Compute f: minus scaled log-likelihood using estimates for beta
     f.beta.cand <- -.scaled.ll(y = y, n = n, mu = mu.cand, wt = weights)
@@ -161,7 +163,7 @@
                        lambda = lambda, lambda1 = lambda1, lambda2 = lambda2, step = step, po.ncores = po.ncores)
       
       # Compute mu based on updated estimates for beta
-      mu.cand <- linkinv(as.numeric(X %*% beta.cand + offset))
+      mu.cand <- linkinv(XB(X, beta.cand) + offset)
       
       # Compute f: minus scaled log-likelihood using updated estimates for beta
       f.beta.cand <- -.scaled.ll(y = y, n = n, mu = mu.cand, wt = weights)

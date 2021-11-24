@@ -215,13 +215,13 @@ predict_reest.glmsmurf <- function(object, newdata = NULL, newoffset = NULL, typ
     
     if (type == "link") {
       # Linear predictors
-      lp <- as.numeric(X.new %*% coefs + newoffset)
+      lp <- XB(X.new, coefs) + newoffset
       names(lp) <- rownames(X.new)
       return(lp)
       
     } else if (type == "response") {
       # Fitted values
-      fv <- object$family$linkinv(as.numeric(X.new %*% coefs + newoffset))
+      fv <- object$family$linkinv(XB(X.new, coefs) + newoffset)
       names(fv) <- rownames(X.new)
       return(fv)
       

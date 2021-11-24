@@ -212,7 +212,7 @@
     
     if (length(beta.reduced) > 1) {
       # Combine covariates into the groups and convert to sparse matrix
-      model.matrix.reest <- Matrix(X %*% X.transform, sparse = TRUE)
+      model.matrix.reest <- XXt(X, as(X.transform, "sparseMatrix"))
       # Re-estimate model using groups, use speedglm.wfit 
       glm.reest <- speedglm.wfit(y = y, X = model.matrix.reest, intercept = TRUE, family = family, 
                                  start = NULL, offset = offset, weights = weights,
@@ -220,7 +220,7 @@
     } else {
       # Only intercept is present, use glm.fit function from "stats" to avoid problems
       # Combine covariates into the groups
-      model.matrix.reest <- as.matrix(X %*% X.transform)
+      model.matrix.reest <- XXt(X, as(X.transform, "sparseMatrix"))
       # Re-estimate model using groups, use glm.fit 
       glm.reest <- glm.fit(y = y, x = model.matrix.reest, intercept = TRUE, family = family, 
                            start = NULL, offset = offset, weights = weights)
@@ -332,7 +332,7 @@
     
     if (reest) {
       # Recompute model.matrix.reest
-      model.matrix.reest <- Matrix(X %*% X.transform, sparse = TRUE)
+      model.matrix.reest <- XXt(X, as(X.transform, "sparseMatrix"))
     }
   }
   
@@ -351,7 +351,7 @@
 
   
     # Linear predictors
-    eta <- as.numeric(X %*% beta.new + offset)
+    eta <- XB(X, beta.new) + offset
     # Fitted values
     mu <- linkinv(eta)
     
@@ -446,7 +446,7 @@
     } else {
     
       # Re-estimated mu-values
-      eta.reest <- as.numeric(X %*% beta.reest.long + offset)
+      eta.reest <- XB(X, beta.reest.long) + offset
       mu.reest <- linkinv(eta.reest)
       # Minus scaled log-likelihood of re-estimated model
       fbeta.reest <- -.scaled.ll(y = y, n = n, mu = mu.reest, wt = weights)

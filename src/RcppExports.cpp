@@ -33,9 +33,48 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// XtV
+Eigen::VectorXd XtV(Eigen::SparseMatrix<double> X, const Eigen::Map<Eigen::VectorXd> V);
+RcppExport SEXP _ssmurf_XtV(SEXP XSEXP, SEXP VSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Eigen::SparseMatrix<double> >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type V(VSEXP);
+    rcpp_result_gen = Rcpp::wrap(XtV(X, V));
+    return rcpp_result_gen;
+END_RCPP
+}
+// XB
+Eigen::VectorXd XB(Eigen::SparseMatrix<double> X, const Eigen::Map<Eigen::VectorXd> B);
+RcppExport SEXP _ssmurf_XB(SEXP XSEXP, SEXP BSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Eigen::SparseMatrix<double> >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type B(BSEXP);
+    rcpp_result_gen = Rcpp::wrap(XB(X, B));
+    return rcpp_result_gen;
+END_RCPP
+}
+// XXt
+Eigen::SparseMatrix<double> XXt(Eigen::SparseMatrix<double> X, Eigen::SparseMatrix<double> Xt);
+RcppExport SEXP _ssmurf_XXt(SEXP XSEXP, SEXP XtSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Eigen::SparseMatrix<double> >::type X(XSEXP);
+    Rcpp::traits::input_parameter< Eigen::SparseMatrix<double> >::type Xt(XtSEXP);
+    rcpp_result_gen = Rcpp::wrap(XXt(X, Xt));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_ssmurf_admm_po_cpp", (DL_FUNC) &_ssmurf_admm_po_cpp, 11},
+    {"_ssmurf_XtV", (DL_FUNC) &_ssmurf_XtV, 2},
+    {"_ssmurf_XB", (DL_FUNC) &_ssmurf_XB, 2},
+    {"_ssmurf_XXt", (DL_FUNC) &_ssmurf_XXt, 2},
     {NULL, NULL, 0}
 };
 
