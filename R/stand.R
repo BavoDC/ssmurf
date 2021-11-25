@@ -96,5 +96,5 @@
     } 
   }
   
-  return(list(X = X, X.means = X.means, X.sds = X.sds))
+  return(list(X = as(X, "dgCMatrix"), X.means = X.means, X.sds = X.sds))
 }

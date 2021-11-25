@@ -312,6 +312,7 @@
         # Correct column names
         colnames(X) <- X.cnames 
       }
+      X = as(X, "dgCMatrix")
       
         
       # Correct beta.new[ind.s.e]

@@ -362,7 +362,7 @@ glmsmurf <- function(formula, family, data, weights, start, offset, lambda, lamb
   # Prepare model matrix (X)
   
   # Make sparse model matrix
-  X <- sparse.model.matrix(object = attr(mf, "terms"), data = mf, contrasts.arg = contrasts)
+  X <- sparse.model.matrix(object = attr(mf, "terms"), data = mf, contrasts.arg = contrasts, repr = "C")
   # Rename columns
   colnames(X) <- .rename_mm.cols(colnames(X))
   

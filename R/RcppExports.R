@@ -5,6 +5,10 @@ admm_po_cpp <- function(beta_tilde, slambda, lambda1, lambda2, penmat, Q, eigval
     .Call(`_ssmurf_admm_po_cpp`, beta_tilde, slambda, lambda1, lambda2, penmat, Q, eigval, fast, maxiter, rho, beta_old)
 }
 
+admm_po_cppAdj <- function(beta_tilde, slambda, lambda1, lambda2, penmat, Q, eigval, fast, maxiter, rho, beta_old) {
+    .Call(`_ssmurf_admm_po_cppAdj`, beta_tilde, slambda, lambda1, lambda2, penmat, Q, eigval, fast, maxiter, rho, beta_old)
+}
+
 XtV <- function(X, V) {
     .Call(`_ssmurf_XtV`, X, V)
 }

@@ -33,6 +33,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// admm_po_cppAdj
+Eigen::VectorXd admm_po_cppAdj(const Eigen::Map<Eigen::VectorXd>& beta_tilde, const double slambda, const Eigen::Map<Eigen::VectorXd>& lambda1, const double lambda2, const Eigen::Map<Eigen::MatrixXd>& penmat, const Eigen::Map<Eigen::MatrixXd>& Q, const Eigen::Map<Eigen::VectorXd>& eigval, const bool fast, const int maxiter, double rho, const Eigen::Map<Eigen::VectorXd>& beta_old);
+RcppExport SEXP _ssmurf_admm_po_cppAdj(SEXP beta_tildeSEXP, SEXP slambdaSEXP, SEXP lambda1SEXP, SEXP lambda2SEXP, SEXP penmatSEXP, SEXP QSEXP, SEXP eigvalSEXP, SEXP fastSEXP, SEXP maxiterSEXP, SEXP rhoSEXP, SEXP beta_oldSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type beta_tilde(beta_tildeSEXP);
+    Rcpp::traits::input_parameter< const double >::type slambda(slambdaSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type lambda1(lambda1SEXP);
+    Rcpp::traits::input_parameter< const double >::type lambda2(lambda2SEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd>& >::type penmat(penmatSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd>& >::type Q(QSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type eigval(eigvalSEXP);
+    Rcpp::traits::input_parameter< const bool >::type fast(fastSEXP);
+    Rcpp::traits::input_parameter< const int >::type maxiter(maxiterSEXP);
+    Rcpp::traits::input_parameter< double >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type beta_old(beta_oldSEXP);
+    rcpp_result_gen = Rcpp::wrap(admm_po_cppAdj(beta_tilde, slambda, lambda1, lambda2, penmat, Q, eigval, fast, maxiter, rho, beta_old));
+    return rcpp_result_gen;
+END_RCPP
+}
 // XtV
 Eigen::VectorXd XtV(Eigen::SparseMatrix<double> X, const Eigen::Map<Eigen::VectorXd> V);
 RcppExport SEXP _ssmurf_XtV(SEXP XSEXP, SEXP VSEXP) {
@@ -72,6 +93,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_ssmurf_admm_po_cpp", (DL_FUNC) &_ssmurf_admm_po_cpp, 11},
+    {"_ssmurf_admm_po_cppAdj", (DL_FUNC) &_ssmurf_admm_po_cppAdj, 11},
     {"_ssmurf_XtV", (DL_FUNC) &_ssmurf_XtV, 2},
     {"_ssmurf_XB", (DL_FUNC) &_ssmurf_XB, 2},
     {"_ssmurf_XXt", (DL_FUNC) &_ssmurf_XXt, 2},
